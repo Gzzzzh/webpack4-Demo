@@ -1,7 +1,7 @@
-import '../css/index.scss'
+import '@/css/index.scss'
 import $ from "jquery";
-import '../utils/common'
-import '../styles/common.scss'
+import '@/styles/common.scss'
+import '@/utils/common.js'
 
 $(function(){
     

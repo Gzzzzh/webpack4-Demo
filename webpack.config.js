@@ -1,6 +1,5 @@
 const path = require('path')
 const fs = require('fs')
-const webpack = require('webpack')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -8,18 +7,17 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PurifycssWebpack = require("purifycss-webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-
 const glob = require("glob");
 
 
-
-const pagesDirPath = path.resolve(__dirname, "./src/js");
+const resolve = dir => path.resolve(__dirname, dir);
+const pagesDirPath = path.resolve(__dirname, "src/pages");
 
 const getEntries = () => { //自动生成入口对象
     const result = fs.readdirSync(pagesDirPath)
     let entry = {};
     result.forEach(item => {
-        entry[item.slice(0,-3)] = path.resolve(__dirname, `./src/js/${item}`);
+        entry[item] = path.resolve(__dirname, `./src/pages/${item}/${item}.js`);
     });
     return entry;
 }
@@ -30,10 +28,10 @@ const generatorHtmlWebpackPlugins = () => { //自动生成html模板
     let result = fs.readdirSync(pagesDirPath);
     result.forEach(item => {
         arr.push(new HtmlWebpackPlugin({
-            template: `src/${item.slice(0,-3)}.html`,
-            filename: `${item.slice(0,-3)}.html`,
+            template: `src/pages/${item}/${item}.html`,
+            filename: `${item}.html`,
             hash:true,
-            chunks: [item.slice(0,-3),"manifest", "vendors", "common"]
+            chunks: [item, "vendors", "common"]
         }));
     });
     return arr;
@@ -41,6 +39,11 @@ const generatorHtmlWebpackPlugins = () => { //自动生成html模板
 module.exports = {
     devtool:'eval-source-map',
     entry:getEntries(),
+    resolve:{
+        alias: {
+            '@': resolve('src')
+        }
+    },
     output: {
         path:path.join(__dirname, 'dist'),
         filename:'js/[name].[hash:8].js'
@@ -49,7 +52,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test:/\.(sa|sc|c)ss$/,
+                test:/\.(c|sc|sa)ss$/,
                 use: [
                   process.env.NODE_ENV === 'development' ? 'style-loader': MiniCssExtractPlugin.loader,
                   'css-loader',
@@ -65,7 +68,7 @@ module.exports = {
                     options:{
                         limit:5*1024,
                         //指定拷贝文件的输出目录
-                        outputPath: 'images'
+                        outputPath: 'assets'
                     }
                 }
             },
@@ -110,10 +113,10 @@ module.exports = {
                 }
             }
         },
-        // 为 webpack 运行时代码创建单独的chunk
+       /*  // 为 webpack 运行时代码创建单独的chunk
         runtimeChunk:{
             name:'manifest'
-        },
+        }, */
         //压缩css和js
         minimizer: [
             new UglifyjsWebpackPlugin({
@@ -125,7 +128,7 @@ module.exports = {
                   comments: false  // 删掉所有注释
                 },
                 compress: {
-                    /* warning: false, // 插件在进行删除一些无用的代码时不提示警告 */
+                    
                     drop_console: true // 过滤console,即使写了console,线上也不显示
                 }
               } 
@@ -152,7 +155,7 @@ module.exports = {
         ...generatorHtmlWebpackPlugins(),
         new MiniCssExtractPlugin({ //将CSS从js单独分离出来
             filename: "css/[name].[chunkhash:8].css",
-            chunkFilename: "css/[name].[chunkhash:8].[id].css"
+            chunkFilename: "css/[name].[chunkhash].css"
         }),
         new PurifycssWebpack({ //去除没用的css
             //*.html 表示 src 文件夹下的所有 html 文件，还可以清除其它文件 *.js、*.php···
