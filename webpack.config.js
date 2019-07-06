@@ -179,7 +179,7 @@ module.exports = {
             '/api': {
                 changeOrigin: true,
                 secure: false, // 目标服务器地址是否是安全协议
-                target: 'http://localhost:3000',
+                target: 'https://api.apiopen.top/',
                 pathRewrite: {"^/api": ""} // 将/api重写为""空字符串
             }
         }
