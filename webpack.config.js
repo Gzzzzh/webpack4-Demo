@@ -150,24 +150,6 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(), //每次运行都清除dist
         ...generatorHtmlWebpackPlugins(),
-        /* new HtmlWebpackPlugin({
-            template: `src/index.html`,
-            filename: `index.html`,
-            hash:true,
-            chunks: ['index',"manifest", "vendors", "common"]
-        }),
-        new HtmlWebpackPlugin({
-            template: `src/login.html`,
-            filename: `login.html`,
-            hash:true,
-            chunks: ['login',"manifest", "vendors", "common"]
-        }),
-        new HtmlWebpackPlugin({
-            template: `src/demo1.html`,
-            filename: `demo1.html`,
-            hash:true,
-            chunks: ['demo1',"manifest", "vendors", "common"]
-        }), */
         new MiniCssExtractPlugin({ //将CSS从js单独分离出来
             filename: "css/[name].[chunkhash:8].css",
             chunkFilename: "css/[name].[chunkhash:8].[id].css"
@@ -187,9 +169,19 @@ module.exports = {
         open:true,
         contentBase: './dist',
         host: 'localhost',
+        progress: true, //显示打包的进度
+        inline: true, //开启页面自动刷新
         port:8080,
          //服务器返回给浏览器的时候是否启用gzip压缩
         compress: true,
-        hot:true
+        hot:true,
+        proxy:{
+            '/api': {
+                changeOrigin: true,
+                secure: false, // 目标服务器地址是否是安全协议
+                target: 'http://localhost:3000',
+                pathRewrite: {"^/api": ""} // 将/api重写为""空字符串
+            }
+        }
     },
 }
