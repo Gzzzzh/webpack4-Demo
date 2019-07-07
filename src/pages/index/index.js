@@ -1,8 +1,8 @@
-import '@/css/index.scss'
-import $ from "jquery";
-import '@/styles/common.scss'
-import '@/utils/common.js'
 
+import '@/css/styles/common.scss'
+import '@/pages/index/index.scss'
+import $ from "jquery";
+import '@/js/utils/common.js'
 $(function(){
     
     $.ajax({

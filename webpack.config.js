@@ -159,7 +159,7 @@ module.exports = {
         }),
         new PurifycssWebpack({ //去除没用的css
             //*.html 表示 src 文件夹下的所有 html 文件，还可以清除其它文件 *.js、*.php···
-            paths: glob.sync(path.resolve("./src/*.html"))
+            paths: glob.sync(path.resolve("./src/pages/*/*.html"))
         }),
         new CopyWebpackPlugin([ //静态资源复制
             {

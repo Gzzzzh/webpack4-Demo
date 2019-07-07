@@ -1,7 +1,7 @@
-import '@/css/login.scss'
-import '@/styles/common.scss'
+import '@/css/styles/common.scss'
+import '@/pages/login/login.scss'
 import $ from "jquery";
-import '@/utils/common.js'
+import '@/js/utils/common.js'
 $(function(){
     alert('login')
 })
