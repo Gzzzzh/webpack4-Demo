@@ -4,12 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>index</title>
+    <title>Document</title>
 </head>
 <body>
-    <p>index</p>
-    <img src="../../assets/QQ图片20190705135535.png" alt="">
-    <iframe src="demo1.html" frameborder="0"></iframe>
-    <div class="common"></div>
+    <input id="ss"></input>
+    <table id="dg"></table>
+    <a href="#" title="This is the tooltip message." class="easyui-tooltip">Hover me</a>
+    <div id="dlg" class="easyui-dialog" title="Basic Dialog" data-options="buttons:'#bb',iconCls:'icon-save',closed:true,modal:true" style="width:400px;padding:10px;">
+        <div>
+            <div style="margin-bottom:20px">
+                <div>姓名:</div>
+                <input id="name" class="easyui-textbox" data-options="prompt:'请输入姓名'" style="width:100%;height:32px">
+            </div>
+            <div style="margin-bottom:20px">
+                <div>年龄:</div>
+                <input id="age" type="text" class="easyui-numberbox"  data-options="min:0">
+            </div>
+            <div style="margin-bottom:20px">
+                <div>性别:</div>
+                <input id="sex" class="easyui-textbox" data-options="prompt:'请输入性别'" style="width:100%;height:32px">
+            </div>
+        </div>
+    </div>
+    <div id="bb">
+        <a href="javascript:;" class="easyui-linkbutton" onclick="inserted()">确定</a>
+        <a href="javascript:;" class="easyui-linkbutton" onclick="clearsd()">关闭</a>
+    </div> 
+    <input id="pic" class="easyui-filebox" style="width:300px">
+    <button id="getPic">获取文件</button>
 </body>
 </html>

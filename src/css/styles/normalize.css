@@ -1,0 +1,71 @@
+
+html{
+    padding: 0;
+    margin: 0;
+}
+body{
+    background-color: rgb(244,244,244);
+    padding: 0;
+    margin: 0;
+}
+.html-wrap{
+    margin: 8px auto 0 auto;
+    padding: 0 12px 10px 0;
+    background-color: #fff;
+    width: 1070px;
+}
+.html-wrap2{
+    margin: 8px auto 0 auto;
+    padding: 0 12px 10px 0;
+    background-color: #fff;
+    width: 100%;
+}
+.html-con{
+    margin-left: 16px;
+    padding-top: 10px;
+}
+.flex{
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flex;
+}
+.flex-v{
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flex;
+    align-items: center;
+}
+
+
+
+/*html样式覆盖*/
+button{
+    background-color: rgba(0,0,0,0);
+    border:none;
+    outline: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+input,select,textarea{
+    outline: none;
+}
+
+
+
+
+/*easyui的样式覆盖:*/
+.datagrid-cell{
+    font-size: 12px;
+    text-align: center;
+}
+/*整个表格的border*/
+.datagrid .panel-body{
+    border:1px solid #e9e9e9;
+}
+/*标题行*/
+.datagrid-header-row{
+    background-color: rgb(244,244,244);
+}
+.datagrid-header-row .datagrid-cell span{
+    font-size: 13px;
+}

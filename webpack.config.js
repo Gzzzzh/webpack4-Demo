@@ -4,10 +4,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const PurifycssWebpack = require("purifycss-webpack");
+//const PurifycssWebpack = require("purifycss-webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const glob = require("glob");
+//const glob = require("glob");
 
 
 const resolve = dir => path.resolve(__dirname, dir);
@@ -37,7 +37,7 @@ const generatorHtmlWebpackPlugins = () => { //自动生成html模板
     return arr;
 }
 module.exports = {
-    devtool:'eval-source-map',
+    devtool:process.env.NODE_ENV === 'development' ? 'cheap-eval-source-map': 'source-map',
     entry:getEntries(),
     resolve:{
         alias: {
@@ -56,9 +56,16 @@ module.exports = {
                 use: [
                   process.env.NODE_ENV === 'development' ? 'style-loader': MiniCssExtractPlugin.loader,
                   'css-loader',
-                  'postcss-loader',
                   'sass-loader',
                   
+                ]
+            },
+            //第三方css一般都会考虑到浏览器前缀，所以要对他除外处理，一起处理可能会重复叠加导致打包错误
+            {
+                test:/\.(c|sc|sa)ss$/,
+                exclude:path.resolve(__dirname, 'src/css/lib/themes/default/easyui.css'),
+                use: [
+                 'postcss-loader'                 
                 ]
             },
             {
@@ -98,7 +105,7 @@ module.exports = {
      optimization: {
         // 找到chunk中共享的模块,取出来生成单独的chunk
         splitChunks: {
-            chunks: "all",  // async表示抽取异步模块，all表示对所有模块生效，initial表示对同步模块生效
+            chunks: "initial",  // async表示抽取异步模块，all表示对所有模块生效，initial表示对同步模块生效
             cacheGroups: {
                 vendors: {  // 抽离第三方插件
                     test: /[\\/]node_modules[\\/]/,     // 指定是node_modules下的第三方包
@@ -113,8 +120,8 @@ module.exports = {
                 }
             }
         },
-       /*  // 为 webpack 运行时代码创建单独的chunk
-        runtimeChunk:{
+         // 为 webpack 运行时代码创建单独的chunk
+        /* runtimeChunk:{
             name:'manifest'
         }, */
         //压缩css和js
@@ -157,16 +164,17 @@ module.exports = {
             filename: "css/[name].[chunkhash:8].css",
             chunkFilename: "css/[name].[chunkhash].css"
         }),
-        new PurifycssWebpack({ //去除没用的css
+        //对于ui框架自动生成的标签这里无法检测 ，会使一些需要用到的样式 误认为没用到去掉，因此这个插件根据自身需要使用
+       // new PurifycssWebpack({ //去除没用的css
             //*.html 表示 src 文件夹下的所有 html 文件，还可以清除其它文件 *.js、*.php···
-            paths: glob.sync(path.resolve("./src/pages/*/*.html"))
-        }),
-        new CopyWebpackPlugin([ //静态资源复制
+         //  paths: glob.sync(path.resolve("./src/pages/*/*.html"))
+        //}),
+        /* new CopyWebpackPlugin([ //静态资源复制
             {
                 from:'src/assets',
                 to:'assets'
             }
-        ]) 
+        ])  */
     ],
     devServer: {
         open:true,
