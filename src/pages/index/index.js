@@ -5,21 +5,112 @@ import "@/js/libs/easyui-lang-zh_CN.js"
 import "@/css/styles/normalize.css"
 import "@/css/lib/themes/default/easyui.css"
 import "@/css/lib/themes/icon.css"
+
+let cols = [
+    {field:'select',checkbox:true},
+    {field:"name",title:'姓名',width:100,editor:{
+        type:'text',
+        options:{
+            required:true
+        }
+    }},
+    {field:"age",title:'年龄',width:100,editor:'numberbox'},
+    {field:"sex",title:'性别',align:"center",width:100,editor:'text',
+                formatter:function(value,row,index){
+                    if(value.length>10) {
+                        let content = `<span title="${value}">${value}</span>`
+                        return content
+                    } else {
+                        return value
+                    }
+                    
+                }},
+    {field:'action',title:'操作',width:70,align:'center',
+                formatter:function(value,row,index){
+                    if (row.editing){
+                        var s = '<a href="javascript:;" class="saverow">确定</a> ';
+                        var c = '<a href="javascript:;" class="cancelrow">取消</a>';
+                        return s+c;
+                    } else {
+                        var e = '<a href="javascript:;" class="editrow">编辑</a> ';
+                        var d = '<a href="javascript:;" class="deleterow">删除</a>';
+                        
+                        return e+d;
+                    }
+                }
+            }
+ ]
+ let data = [
+    {
+        name:'tom',
+        age:12,
+        sex:'malesdd gsdfg sdfg dfg dfg sdfg dfg dsfg df gdfg df gdsfg df gdf sdg dsfgdfgdfg sdf sdfs',
+ 
+    },
+    {
+        name:'tom1',
+        age:123,
+        sex:'male'
+    },
+    {
+        name:'tom2',
+        age:120,
+        sex:'male'
+    },
+    {
+        name:'tom',
+        age:12,
+        sex:'male'
+    },
+    {
+        name:'tom1',
+        age:123,
+        sex:'male'
+    },
+    {
+        name:'tom2',
+        age:120,
+        sex:'male'
+    },
+    {
+        name:'tom',
+        age:12,
+        sex:'male'
+    },
+    {
+        name:'tom1',
+        age:123,
+        sex:'male'
+    },
+    {
+        name:'tom2',
+        age:120,
+        sex:'male'
+    },
+    {
+        name:'tom2',
+        age:120,
+        sex:'male'
+    },
+ 
+ ]
 $(function(){
     init()
-   $('#getPic').on('click',function(){
-    console.log($('#pic').next().find('input[id^="filebox_file_id_"]')[0].files);
-   })
-   $('#ss').searchbox({
-    prompt:'搜索',
-    searcher:function(value,name){
-        alert(value)
-    }
+    bindEvent()
+    init_edit_delete_btn()
 })
-})
-function getFile(){
-    
+
+function bindEvent () {
+    $('#getPic').on('click',function(){
+        console.log($('#pic').next().find('input[id^="filebox_file_id_"]')[0].files);
+    })
+    $('#insert').on('click', inserted);
+    $('#clearsd').on('click', clearsd)
 }
+function getRowIndex(target){
+    var tr = $(target).closest('tr.datagrid-row');
+    return parseInt(tr.attr('datagrid-row-index'));
+} 
 function inserted(){
    let name = $('#name').textbox('getValue')
    let age = $('#age').numberbox('getValue')
@@ -29,7 +120,8 @@ function inserted(){
        index:0,
        row:person
    })
-   clearsd() 
+   clearsd()
+   init_edit_delete_btn() 
 }
 function clearsd(){
    $('#name').textbox('clear')
@@ -37,93 +129,31 @@ function clearsd(){
    $('#sex').textbox('clear')
    $('#dlg').dialog('close')
 }
-let cols = [
-   {field:'select',checkbox:true},
-   {field:"name",title:'姓名',width:100,editor:{
-       type:'text',
-       options:{
-           required:true
-       }
-   }},
-   {field:"age",title:'年龄',width:100,editor:'numberbox'},
-   {field:"sex",title:'性别',align:"center",width:100,editor:'text',
-               formatter:function(value,row,index){
-                   if(value.length>10) {
-                       let content = `<span title="${value}">${value}</span>`
-                       return content
-                   } else {
-                       return value
-                   }
-                   
-               }},
-   {field:'action',title:'操作',width:70,align:'center',
-               formatter:function(value,row,index){
-                   if (row.editing){
-                       var s = '<a href="javascript:;" onclick="saverow(this)">确定</a> ';
-                       var c = '<a href="javascript:;" onclick="cancelrow(this)">取消</a>';
-                       return s+c;
-                   } else {
-                       var e = '<a href="javascript:;" onclick="editrow(this)">编辑</a> ';
-                       var d = '<a href="javascript:;" onclick="deleterow(this)">删除</a>';
-                       return e+d;
-                   }
-               }
-           }
-]
-let data = [
-   {
-       name:'tom',
-       age:12,
-       sex:'malesdd gsdfg sdfg dfg dfg sdfg dfg dsfg df gdfg df gdsfg df gdf sdg dsfgdfgdfg sdf sdfs',
 
-   },
-   {
-       name:'tom1',
-       age:123,
-       sex:'male'
-   },
-   {
-       name:'tom2',
-       age:120,
-       sex:'male'
-   },
-   {
-       name:'tom',
-       age:12,
-       sex:'male'
-   },
-   {
-       name:'tom1',
-       age:123,
-       sex:'male'
-   },
-   {
-       name:'tom2',
-       age:120,
-       sex:'male'
-   },
-   {
-       name:'tom',
-       age:12,
-       sex:'male'
-   },
-   {
-       name:'tom1',
-       age:123,
-       sex:'male'
-   },
-   {
-       name:'tom2',
-       age:120,
-       sex:'male'
-   },
-   {
-       name:'tom2',
-       age:120,
-       sex:'male'
-   },
-
-]
+function init_edit_delete_btn(){
+    $('.deleterow').off()
+    $('.editrow').off()
+    $('.editrow').on('click',function({currentTarget}){
+        $('#dg').datagrid('beginEdit',getRowIndex(currentTarget))
+    })
+    $('.deleterow').on('click',function({currentTarget}){
+        $.messager.confirm('Confirm','Are you sure?',function(r){
+            if (r){
+                $('#dg').datagrid('deleteRow', getRowIndex(currentTarget));
+            }
+        });
+    })
+}
+function init_save_cancel_btn (){
+    $('.saverow').off()
+    $('.cancelrow').off()
+    $('.saverow').on('click',function({currentTarget}){
+        $('#dg').datagrid('endEdit',getRowIndex(currentTarget))
+    })
+    $('.cancelrow').on('click',function({currentTarget}){
+        $('#dg').datagrid('cancelEdit',getRowIndex(currentTarget))
+    })
+}
 function init(){
     $('#dg').datagrid({
        title:'第一中学',
@@ -174,6 +204,10 @@ function init(){
            console.log(row);
            console.log('onBeforeEdit');
            $(this).datagrid('refreshRow', index);
+           $('.saverow').off()
+           $('.cancelrow').off()
+           init_save_cancel_btn()
+           
        },
        onAfterEdit:function(index,row,change){
            row.editing = false;
@@ -181,12 +215,18 @@ function init(){
            console.log(change);
            console.log('onAfterEdit');
            $(this).datagrid('refreshRow', index);
+           
+           init_edit_delete_btn()
+           
        },
        onCancelEdit:function(index,row){
            row.editing = false;
            console.log(row);
            console.log('onCancelEdit');
            $(this).datagrid('refreshRow', index);
+           
+           init_edit_delete_btn()
+           
        },
        onDblClickCell:function(index,field,value){
            $(this).datagrid('beginEdit',index)
@@ -198,25 +238,12 @@ function init(){
            alert('refresh')
        }
    });
-   
+   $('#ss').searchbox({
+    prompt:'搜索',
+    searcher:function(value,name){
+        alert(value)
+    }
+    
+})
 }
-function getRowIndex(target){
-   var tr = $(target).closest('tr.datagrid-row');
-   return parseInt(tr.attr('datagrid-row-index'));
-}
-function editrow(target){
-   $('#dg').datagrid('beginEdit',getRowIndex(target))
-}
-function deleterow(target){
-   $.messager.confirm('Confirm','Are you sure?',function(r){
-       if (r){
-           $('#dg').datagrid('deleteRow', getRowIndex(target));
-       }
-   });
-}  
-function saverow(target){
-   $('#dg').datagrid('endEdit', getRowIndex(target));
-}
-function cancelrow(target){
-   $('#dg').datagrid('cancelEdit', getRowIndex(target));
-}
+

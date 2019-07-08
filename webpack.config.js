@@ -5,7 +5,7 @@ const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 //const PurifycssWebpack = require("purifycss-webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+//const CopyWebpackPlugin = require("copy-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 //const glob = require("glob");
 
@@ -43,6 +43,9 @@ module.exports = {
         alias: {
             '@': resolve('src')
         }
+    },
+    externals : {
+        'jquery' : 'window.jQuery'
     },
     output: {
         path:path.join(__dirname, 'dist'),
@@ -89,7 +92,7 @@ module.exports = {
                 include:path.resolve(__dirname, 'src'),
                 loader:'babel-loader'
             },
-            {
+            /* {
                 test: require.resolve('jquery'),
                 use: [{
                    loader: 'expose-loader',
@@ -98,7 +101,7 @@ module.exports = {
                    loader: 'expose-loader',
                    options: '$'
                 }]
-            }
+            } */
         ]
     },
     // 提取公共模块，包括第三方库和自定义工具库等
