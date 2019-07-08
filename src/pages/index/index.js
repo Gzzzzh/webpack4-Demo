@@ -179,6 +179,7 @@ function init(){
        iconCls: 'icon-undo',
        handler: function(){
            $('#dg').datagrid('rejectChanges')
+           init_edit_delete_btn()
        }
    },'-',{
        iconCls: 'icon-search',
